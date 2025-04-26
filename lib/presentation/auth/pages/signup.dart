@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:netflix/common/helper/message/display_message.dart';
 import 'package:netflix/common/helper/navigation/app_navigation.dart';
 import 'package:netflix/core/confiqs/theme/app_colors.dart';
+import 'package:netflix/data/auth/models/auth/signup_req_params.dart';
+import 'package:netflix/domain/auth/usecases/signup.dart';
 import 'package:netflix/presentation/auth/pages/signin.dart';
 import 'package:netflix/presentation/home/pages/home.dart';
+import 'package:netflix/service_locator.dart';
 import 'package:reactive_button/reactive_button.dart';
 
 class SignupPage extends StatefulWidget {
@@ -88,7 +91,11 @@ class _SignupPageState extends State<SignupPage> {
     return ReactiveButton(
         title: 'Sign Up',
         activeColor: AppColors.primary,
-        onPressed: () async {},
+        onPressed: () async => await sl<SignupUseCase>().call(
+                params: SignupReqParams(
+              email: _emailCon.text,
+              password: _passwordCon.text,
+            )),
         onSuccess: () {
           AppNavigation.pushAndRemove(context, const HomePage());
         },
@@ -105,7 +112,7 @@ class _SignupPageState extends State<SignupPage> {
           style: const TextStyle(color: Colors.blue),
           recognizer: TapGestureRecognizer()
             ..onTap = () {
-              AppNavigation.push(context, SigninPage());
+              AppNavigation.push(context, const SigninPage());
             })
     ]));
   }

@@ -1,12 +1,18 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:netflix/domain/auth/usecases/is_loggedin.dart';
 import 'package:netflix/presentation/splash/bloc/splash_state.dart';
+import 'package:netflix/service_locator.dart';
 
 class SplashCubit extends Cubit<SplashState> {
   SplashCubit() : super(DisplaySplash());
 
   void appStarted() async {
     await Future.delayed(const Duration(seconds: 2));
-    // var is
-    emit(UnAuthenticated());
+    var isLoggedIn = await sl<IsLoggedinUseCase>().call();
+    if (isLoggedIn) {
+      emit(Authenticated());
+    } else {
+      emit(UnAuthenticated());
+    }
   }
 }

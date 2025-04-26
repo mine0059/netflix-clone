@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:netflix/common/helper/message/display_message.dart';
 import 'package:netflix/common/helper/navigation/app_navigation.dart';
 import 'package:netflix/core/confiqs/theme/app_colors.dart';
+import 'package:netflix/data/auth/models/auth/signin_req_params.dart';
+import 'package:netflix/domain/auth/usecases/signin.dart';
 import 'package:netflix/presentation/auth/pages/signup.dart';
+import 'package:netflix/presentation/home/pages/home.dart';
+import 'package:netflix/service_locator.dart';
 import 'package:reactive_button/reactive_button.dart';
 
 class SigninPage extends StatefulWidget {
-  SigninPage({super.key});
+  const SigninPage({super.key});
 
   @override
   State<SigninPage> createState() => _SigninPageState();
@@ -80,9 +84,17 @@ class _SigninPageState extends State<SigninPage> {
     return ReactiveButton(
       title: 'Sign In',
       activeColor: AppColors.primary,
-      onPressed: () async {},
-      onSuccess: () {},
+      onPressed: () async => await sl<SigninUseCase>().call(
+        params: SigninReqParams(
+          email: _emailCon.text,
+          password: _passwordCon.text,
+        ),
+      ),
+      onSuccess: () {
+        AppNavigation.pushAndRemove(context, const HomePage());
+      },
       onFailure: (error) {
+        print("Signin failure: $error");
         DisplayMessage.errorMessage(error, context);
       },
     );
